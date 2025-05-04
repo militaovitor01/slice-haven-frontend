@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FeaturedSection } from './components/FeaturedSection';
 import { HeroSection } from './components/HeroSection';
 import { CategorySection } from './components/CategorySection';
 import { ReviewOrderModal } from '../../components/ReviewOrderModal';
-import { pizzas, drinks, desserts } from '../../data/products';
 import { Container } from './styles';
 import { PromotionBanner } from './components/PromotionBanner';
 import { CartItem } from '../../contexts/CartContext';
@@ -11,6 +10,36 @@ import { CartItem } from '../../contexts/CartContext';
 const HomePage: React.FC = () => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<CartItem | null>(null);
+
+  const [pizzas, setPizzas] = useState<CartItem[]>([]);
+  const [drinks, setDrinks] = useState<CartItem[]>([]);
+  const [desserts, setDesserts] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [pizzasRes, drinksRes, dessertsRes] = await Promise.all([
+          fetch('http://localhost:3001/api/pizzas'),
+          fetch('http://localhost:3001/api/drinks'),
+          fetch('http://localhost:3001/api/desserts'),
+        ]);
+
+        const [pizzasData, drinksData, dessertsData] = await Promise.all([
+          pizzasRes.json(),
+          drinksRes.json(),
+          dessertsRes.json(),
+        ]);
+
+        setPizzas(pizzasData);
+        setDrinks(drinksData);
+        setDesserts(dessertsData);
+      } catch (error) {
+        console.error('Erro ao buscar dados da API:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleOpenReviewModal = (item: CartItem) => {
     setSelectedItem(item);
@@ -20,6 +49,10 @@ const HomePage: React.FC = () => {
   const handleCloseReviewModal = () => {
     setIsReviewModalOpen(false);
   };
+
+  if (pizzas.length === 0 && drinks.length === 0 && desserts.length === 0) {
+    return <p>Carregando...</p>;
+  }
 
   return (
     <Container>
