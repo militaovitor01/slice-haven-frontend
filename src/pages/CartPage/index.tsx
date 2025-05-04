@@ -45,8 +45,7 @@ const CartPage: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    // In a real app, you would handle payment here
-    navigate('/confirmation');
+    navigate('/checkout');
   };
 
   const handleApplyPromo = () => {
@@ -71,7 +70,7 @@ const CartPage: React.FC = () => {
         <BackButton to="/">
           <ArrowLeft size={18} /> Back to Menu
         </BackButton>
-        
+
         <EmptyCart>
           <ShoppingBag size={64} />
           <EmptyCartMessage>Your cart is empty</EmptyCartMessage>
@@ -87,22 +86,22 @@ const CartPage: React.FC = () => {
       <BackButton to="/">
         <ArrowLeft size={18} /> Back to Menu
       </BackButton>
-      
+
       <PageTitle>Your Cart</PageTitle>
-      
+
       <CartContainer>
         <CartItems>
           {items.map(item => (
             <CartItem key={item.id}>
               <ItemImage src={item.image} alt={item.name} />
-              
+
               <ItemDetails>
                 <ItemName>{item.name}</ItemName>
-                
+
                 {item.options && item.options.size && (
                   <ItemOptions>
                     Size: {item.options.size.charAt(0).toUpperCase() + item.options.size.slice(1)}
-                    
+
                     {item.options.toppings && item.options.toppings.length > 0 && (
                       <>
                         <br />
@@ -111,7 +110,7 @@ const CartPage: React.FC = () => {
                     )}
                   </ItemOptions>
                 )}
-                
+
                 <QuantityControl>
                   <QuantityButton
                     onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
@@ -127,36 +126,36 @@ const CartPage: React.FC = () => {
                   </QuantityButton>
                 </QuantityControl>
               </ItemDetails>
-              
+
               <ItemPrice>${(item.price * item.quantity).toFixed(2)}</ItemPrice>
-              
+
               <RemoveButton onClick={() => handleRemoveItem(item.id)}>
                 <Trash2 size={20} />
               </RemoveButton>
             </CartItem>
           ))}
         </CartItems>
-        
+
         <CartSummary>
           <SummaryTitle>Order Summary</SummaryTitle>
-          
+
           <SummaryRow>
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </SummaryRow>
-          
+
           <SummaryRow>
             <span>Delivery Fee</span>
             <span>{deliveryFee === 0 ? 'Free' : `$${deliveryFee.toFixed(2)}`}</span>
           </SummaryRow>
-          
+
           {discount > 0 && (
             <SummaryRow>
               <span>Discount ({discount}%)</span>
               <span>-${discountAmount.toFixed(2)}</span>
             </SummaryRow>
           )}
-          
+
           <PromoCode>
             <PromoInput
               type="text"
@@ -166,12 +165,12 @@ const CartPage: React.FC = () => {
             />
             <PromoButton onClick={handleApplyPromo}>Apply</PromoButton>
           </PromoCode>
-          
+
           <SummaryTotal>
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </SummaryTotal>
-          
+
           <CheckoutButton onClick={handleCheckout}>
             Proceed to Checkout
           </CheckoutButton>
