@@ -5,6 +5,7 @@ import { CartProvider } from './contexts/CartContext';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import PromotionsPage from './pages/PromotionsPage';
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/confirmation" element={<ConfirmationPage />} />
             <Route path="/orders" element={<OrderHistoryPage />} />
             <Route path="/promotions" element={<PromotionsPage />} />

@@ -90,34 +90,38 @@ export const ItemOptions = styled.p`
 export const QuantityControl = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: ${({ theme }) => theme.spacing.sm};
   margin-top: ${({ theme }) => theme.spacing.sm};
 `;
 
-export const QuantityButton = styled.button<{ disabled?: boolean }>`
-  width: 28px;
-  height: 28px;
+export const QuantityButton = styled.button`
+  width: 36px;
+  height: 36px;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  background-color: ${({ theme }) => theme.colors.backgroundLight};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${({ disabled, theme }) => 
-    disabled ? '#f5f5f5' : theme.colors.backgroundLight};
-  border: 1px solid #e0e0e0;
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: ${({ theme }) => theme.fontSizes.md};
-  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
-  
-  &:hover:not(:disabled) {
+  transition: all ${({ theme }) => theme.transitions.fast};
+
+  &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
-    color: white;
+    color: ${({ theme }) => theme.colors.textLight};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
 export const QuantityValue = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.md};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  width: 30px;
+  min-width: 40px;
   text-align: center;
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
 `;
 
 export const ItemPrice = styled.div`

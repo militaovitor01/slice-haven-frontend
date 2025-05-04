@@ -47,7 +47,7 @@ const ConfirmationPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [progress, setProgress] = useState(0);
   const orderNumber = `#${Math.floor(10000 + Math.random() * 90000)}`;
-  
+
   const deliverySteps: RouteStep[] = [
     { step: 1, description: 'Order received', time: '4:30 PM', completed: true },
     { step: 2, description: 'Preparing your food', time: '4:35 PM', completed: currentStep >= 2 },
@@ -72,10 +72,10 @@ const ConfirmationPage: React.FC = () => {
         }
         return step;
       });
-      
+
       setProgress(prog => Math.min(prog + 20, 100));
     }, 5000);
-    
+
     return () => clearInterval(timer);
   }, []);
 
@@ -88,7 +88,7 @@ const ConfirmationPage: React.FC = () => {
         <ConfirmationTitle>Order Confirmed!</ConfirmationTitle>
         <ConfirmationNumber>Order Number: {orderNumber}</ConfirmationNumber>
       </ConfirmationHeader>
-      
+
       <OrderDetails>
         <OrderInfo>
           <OrderSection>
@@ -109,14 +109,14 @@ const ConfirmationPage: React.FC = () => {
                   </OrderItem>
                 ))}
               </OrderItems>
-              
+
               <TotalPrice>
                 <span>Total</span>
                 <span>${totalPrice.toFixed(2)}</span>
               </TotalPrice>
             </SectionContent>
           </OrderSection>
-          
+
           <OrderSection>
             <SectionTitle>
               <Clock size={18} />
@@ -127,11 +127,11 @@ const ConfirmationPage: React.FC = () => {
                 <span>Estimated delivery time</span>
                 <span>5:00 PM</span>
               </TimeEstimate>
-              
+
               <DeliveryStatus progress={progress} status={orderStatus} />
             </SectionContent>
           </OrderSection>
-          
+
           <OrderSection>
             <SectionTitle>
               <MapPin size={18} />
@@ -143,31 +143,31 @@ const ConfirmationPage: React.FC = () => {
             </SectionContent>
           </OrderSection>
         </OrderInfo>
-        
+
         <DeliveryMap>
           <DeliveryBadge status={orderStatus}>
             {orderStatus === 'preparing' && 'Preparing Order'}
             {orderStatus === 'on-the-way' && 'On The Way'}
             {orderStatus === 'delivered' && 'Delivered'}
           </DeliveryBadge>
-          
+
           <div className="map-container">
             {/* Simple map representation */}
             <div className="map-image" />
-            
+
             <MapPinStyled type="restaurant">
               <MapPin size={20} />
               <span>Slice Haven</span>
             </MapPinStyled>
-            
+
             <MapPinStyled type="destination">
               <MapPin size={20} />
               <span>Your Location</span>
             </MapPinStyled>
-            
+
             <DeliveryRoute progress={progress} />
           </div>
-          
+
           <RouteDescription>
             {deliverySteps.map(step => (
               <RouteStep key={step.step} completed={step.completed}>
@@ -187,7 +187,7 @@ const ConfirmationPage: React.FC = () => {
           </RouteDescription>
         </DeliveryMap>
       </OrderDetails>
-      
+
       <DriverInfo isVisible={orderStatus === 'on-the-way'}>
         <DriverAvatar src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Driver" />
         <div>
@@ -196,7 +196,7 @@ const ConfirmationPage: React.FC = () => {
         </div>
         <DriverStatus>Delivering your order</DriverStatus>
       </DriverInfo>
-      
+
       <HomeButton to="/">Return to Home</HomeButton>
     </Container>
   );
