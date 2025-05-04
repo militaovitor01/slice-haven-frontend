@@ -47,8 +47,10 @@ const Header: React.FC = () => {
         <NavLinks>
           <NavLink to="/" active={location.pathname === '/'}>Menu</NavLink>
           <NavLink to="/orders" active={location.pathname === '/orders'}>
-            <Clock size={18} />
-            Orders
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              Orders
+              <Clock size={18} />
+            </span>
           </NavLink>
           <NavLink to="/promotions" active={location.pathname === '/promotions'}>Promotions</NavLink>
           <NavLink to="/locations" active={location.pathname === '/locations'}>Locations</NavLink>
