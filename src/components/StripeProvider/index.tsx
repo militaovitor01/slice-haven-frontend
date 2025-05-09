@@ -1,17 +1,14 @@
 import React from 'react';
-import { Elements } from '@stripe/react-stripe-js';
-import { stripePromise } from '../../services/stripeService';
 
 interface StripeProviderProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
+// This is a simplified version of a Stripe provider
+// In a real application, this would initialize the Stripe.js SDK
+// and provide Stripe context to child components
 const StripeProvider: React.FC<StripeProviderProps> = ({ children }) => {
-    return (
-        <Elements stripe={stripePromise}>
-            {children}
-        </Elements>
-    );
+  return <>{children}</>;
 };
 
 export default StripeProvider; 

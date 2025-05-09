@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-export const HeaderContainer = styled.header<{ scrolled: boolean }>`
+export const HeaderContainer = styled.header<{ $scrolled: boolean }>`
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: ${({ scrolled, theme }) => 
-    scrolled ? theme.colors.background : 'rgba(255, 255, 255, 0.95)'};
-  box-shadow: ${({ scrolled, theme }) => 
-    scrolled ? theme.shadows.md : 'none'};
+  background-color: ${({ $scrolled, theme }) => 
+    $scrolled ? theme.colors.background : 'rgba(255, 255, 255, 0.95)'};
+  box-shadow: ${({ $scrolled, theme }) => 
+    $scrolled ? theme.shadows.md : 'none'};
   transition: all ${({ theme }) => theme.transitions.normal};
   backdrop-filter: blur(10px);
 `;
@@ -57,11 +57,11 @@ export const NavLinks = styled.div`
   }
 `;
 
-export const NavLink = styled(Link)<{ active: boolean }>`
+export const NavLink = styled(Link)<{ $active: boolean }>`
   font-family: ${({ theme }) => theme.fonts.headline};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
-  color: ${({ active, theme }) => 
-    active ? theme.colors.primary : theme.colors.textPrimary};
+  color: ${({ $active, theme }) => 
+    $active ? theme.colors.primary : theme.colors.textPrimary};
   position: relative;
   transition: color ${({ theme }) => theme.transitions.fast};
   
@@ -70,7 +70,7 @@ export const NavLink = styled(Link)<{ active: boolean }>`
     position: absolute;
     bottom: -5px;
     left: 0;
-    width: ${({ active }) => (active ? '100%' : '0')};
+    width: ${({ $active }) => ($active ? '100%' : '0')};
     height: 2px;
     background-color: ${({ theme }) => theme.colors.primary};
     transition: width ${({ theme }) => theme.transitions.normal};

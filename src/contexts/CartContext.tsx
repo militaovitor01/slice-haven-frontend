@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 export interface CartItem {
   id: number;
@@ -30,6 +32,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [items, setItems] = useState<CartItem[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   // Load cart from localStorage on initial render
   useEffect(() => {
@@ -56,6 +60,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [items]);
 
   const addItem = (newItem: CartItem) => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
+
     setItems(prevItems => {
       // Check if item with same ID and options already exists
       const existingItemIndex = prevItems.findIndex(item => 

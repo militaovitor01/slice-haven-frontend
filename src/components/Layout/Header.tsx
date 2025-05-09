@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Pizza, Menu, X, Clock } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   HeaderContainer,
   NavContainer,
@@ -19,6 +20,7 @@ const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -35,7 +37,7 @@ const Header: React.FC = () => {
   }, [location]);
 
   return (
-    <HeaderContainer scrolled={isScrolled}>
+    <HeaderContainer $scrolled={isScrolled}>
       <NavContainer>
         <Link to="/">
           <Logo>
@@ -45,16 +47,19 @@ const Header: React.FC = () => {
         </Link>
 
         <NavLinks>
-          <NavLink to="/" active={location.pathname === '/'}>Menu</NavLink>
-          <NavLink to="/orders" active={location.pathname === '/orders'}>
+          <NavLink to="/" $active={location.pathname === '/'}>Menu</NavLink>
+          <NavLink to="/orders" $active={location.pathname === '/orders'}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               Orders
               <Clock size={18} />
             </span>
           </NavLink>
-          <NavLink to="/promotions" active={location.pathname === '/promotions'}>Promotions</NavLink>
-          <NavLink to="/locations" active={location.pathname === '/locations'}>Locations</NavLink>
-          <NavLink to="/about" active={location.pathname === '/about'}>About Us</NavLink>
+          <NavLink to="/promotions" $active={location.pathname === '/promotions'}>Promotions</NavLink>
+          <NavLink to="/locations" $active={location.pathname === '/locations'}>Locations</NavLink>
+          <NavLink to="/about" $active={location.pathname === '/about'}>About Us</NavLink>
+          {isAuthenticated && (
+            <NavLink to="/profile" $active={location.pathname === '/profile'}>Profile</NavLink>
+          )}
         </NavLinks>
 
         <Link to="/cart">
@@ -70,12 +75,15 @@ const Header: React.FC = () => {
 
         {isMobileMenuOpen && (
           <MobileMenu>
-            <NavLink to="/" active={location.pathname === '/'}>Menu</NavLink>
-            <NavLink to="/orders" active={location.pathname === '/orders'}>Orders</NavLink>
-            <NavLink to="/promotions" active={location.pathname === '/promotions'}>Promotions</NavLink>
-            <NavLink to="/locations" active={location.pathname === '/locations'}>Locations</NavLink>
-            <NavLink to="/about" active={location.pathname === '/about'}>About Us</NavLink>
-            <NavLink to="/cart" active={location.pathname === '/cart'}>
+            <NavLink to="/" $active={location.pathname === '/'}>Menu</NavLink>
+            <NavLink to="/orders" $active={location.pathname === '/orders'}>Orders</NavLink>
+            <NavLink to="/promotions" $active={location.pathname === '/promotions'}>Promotions</NavLink>
+            <NavLink to="/locations" $active={location.pathname === '/locations'}>Locations</NavLink>
+            <NavLink to="/about" $active={location.pathname === '/about'}>About Us</NavLink>
+            {isAuthenticated && (
+              <NavLink to="/profile" $active={location.pathname === '/profile'}>Profile</NavLink>
+            )}
+            <NavLink to="/cart" $active={location.pathname === '/cart'}>
               Cart ({totalItems})
             </NavLink>
           </MobileMenu>

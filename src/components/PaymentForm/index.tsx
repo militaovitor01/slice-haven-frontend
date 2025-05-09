@@ -1,148 +1,127 @@
 import React, { useState } from 'react';
-import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { stripePromise, createPaymentIntent } from '../../services/stripeService';
-import {
-    PaymentFormContainer,
-    Form,
-    CardSection,
-    PayButton,
-    ErrorMessage,
-    SuccessMessage,
-    CardInput,
-    CardInputRow,
-    CardInputLabel
-} from './styles';
+import styled from 'styled-components';
 
 interface PaymentFormProps {
-    amount: number;
-    onSuccess: () => void;
-    onError: (error: string) => void;
+  amount: number;
+  onSuccess: () => void;
+  onError: (error: string) => void;
 }
 
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+`;
+
+const CardElement = styled.div`
+  border: 1px solid ${({ theme }) => theme.colors.textSecondary};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  padding: 1rem;
+  background-color: white;
+  height: 40px;
+  display: flex;
+  align-items: center;
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const Label = styled.label`
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+const Input = styled.input`
+  padding: 0.75rem 1rem;
+  border: 1px solid ${({ theme }) => theme.colors.textSecondary};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  width: 100%;
+`;
+
+const PayButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  padding: 0.75rem 1rem;
+  font-size: ${({ theme }) => theme.fontSizes.md};
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  cursor: pointer;
+  transition: background-color ${({ theme }) => theme.transitions.fast};
+  margin-top: 1rem;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primaryDark};
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.textSecondary};
+    cursor: not-allowed;
+  }
+`;
+
 const PaymentForm: React.FC<PaymentFormProps> = ({ amount, onSuccess, onError }) => {
-    const [processing, setProcessing] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
+  const [cardholderName, setCardholderName] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
-    const stripe = useStripe();
-    const elements = useElements();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!cardholderName.trim()) {
+      onError('Please enter the cardholder name');
+      return;
+    }
+    
+    setIsProcessing(true);
+    
+    try {
+      // In a real implementation, this would communicate with a payment API
+      // For now, we'll just simulate a successful payment
+      setTimeout(() => {
+        onSuccess();
+        setIsProcessing(false);
+      }, 1500);
+    } catch (error) {
+      onError(error instanceof Error ? error.message : 'Payment processing failed');
+      setIsProcessing(false);
+    }
+  };
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
+  return (
+    <FormContainer>
+      <form onSubmit={handleSubmit}>
+        <InputGroup>
+          <Label htmlFor="cardholderName">Cardholder Name</Label>
+          <Input
+            id="cardholderName"
+            type="text"
+            value={cardholderName}
+            onChange={(e) => setCardholderName(e.target.value)}
+            placeholder="Name on card"
+            required
+          />
+        </InputGroup>
 
-        if (!stripe || !elements) {
-            return;
-        }
+        <InputGroup>
+          <Label>Card Information</Label>
+          <CardElement>
+            {/* In a real implementation, this would be replaced with Stripe's CardElement */}
+            **** **** **** 4242 (Simulated card input)
+          </CardElement>
+        </InputGroup>
 
-        setProcessing(true);
-        setError(null);
-
-        try {
-            // Create payment intent
-            const clientSecret = await createPaymentIntent(amount);
-
-            // Get all card elements
-            const cardNumber = elements.getElement(CardNumberElement);
-            const cardExpiry = elements.getElement(CardExpiryElement);
-            const cardCvc = elements.getElement(CardCvcElement);
-
-            if (!cardNumber || !cardExpiry || !cardCvc) {
-                throw new Error('Card elements not found');
-            }
-
-            // Confirm the payment
-            const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: cardNumber,
-                    billing_details: {
-                        // You can add billing details here if needed
-                    }
-                }
-            });
-
-            if (stripeError) {
-                setError(stripeError.message || 'An error occurred');
-                onError(stripeError.message || 'An error occurred');
-            } else if (paymentIntent.status === 'succeeded') {
-                setSuccess(true);
-                onSuccess();
-            }
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'An error occurred';
-            setError(errorMessage);
-            onError(errorMessage);
-        } finally {
-            setProcessing(false);
-        }
-    };
-
-    return (
-        <PaymentFormContainer>
-            <Form onSubmit={handleSubmit}>
-                <CardSection>
-                    <CardInput>
-                        <CardInputLabel>Card Number</CardInputLabel>
-                        <CardNumberElement
-                            options={{
-                                style: {
-                                    base: {
-                                        fontSize: '16px',
-                                        color: '#424770',
-                                        '::placeholder': {
-                                            color: '#aab7c4',
-                                        },
-                                    },
-                                },
-                            }}
-                        />
-                    </CardInput>
-
-                    <CardInputRow>
-                        <CardInput>
-                            <CardInputLabel>Expiration Date</CardInputLabel>
-                            <CardExpiryElement
-                                options={{
-                                    style: {
-                                        base: {
-                                            fontSize: '16px',
-                                            color: '#424770',
-                                            '::placeholder': {
-                                                color: '#aab7c4',
-                                            },
-                                        },
-                                    },
-                                }}
-                            />
-                        </CardInput>
-
-                        <CardInput>
-                            <CardInputLabel>CVC</CardInputLabel>
-                            <CardCvcElement
-                                options={{
-                                    style: {
-                                        base: {
-                                            fontSize: '16px',
-                                            color: '#424770',
-                                            '::placeholder': {
-                                                color: '#aab7c4',
-                                            },
-                                        },
-                                    },
-                                }}
-                            />
-                        </CardInput>
-                    </CardInputRow>
-                </CardSection>
-
-                {error && <ErrorMessage>{error}</ErrorMessage>}
-                {success && <SuccessMessage>Payment successful!</SuccessMessage>}
-
-                <PayButton type="submit" disabled={!stripe || processing}>
-                    {processing ? 'Processing...' : `Pay $${amount.toFixed(2)}`}
-                </PayButton>
-            </Form>
-        </PaymentFormContainer>
-    );
+        <PayButton type="submit" disabled={isProcessing}>
+          {isProcessing ? 'Processing...' : `Pay $${amount.toFixed(2)}`}
+        </PayButton>
+      </form>
+    </FormContainer>
+  );
 };
 
 export default PaymentForm; 
